@@ -9,6 +9,8 @@ import errorHandler from "./middleware/errorHandler.js";
 import notFound from "./middleware/notFound.js";
 //routes
 import authRouter from "./routes/authRoutes.js";
+import chatRouter from "./routes/chatRoutes.js";
+import adminRouter from "./routes/adminRoutes.js";
 
 const app = express();
 
@@ -16,6 +18,8 @@ app.use(express.json());
 app.use(cookieParser(process.env.JWT_SECRET));
 
 app.use("/api/v1/auth", authRouter);
+app.use("/api/v1/chat", chatRouter);
+app.use("/api/v1/admin", adminRouter);
 
 app.use(notFound);
 app.use(errorHandler);
