@@ -53,7 +53,23 @@ export const getOperatorChats = async (req, res) => {
   if (!operator) {
     throw new CustomError.NotFoundError("Operator Not Found");
   }
-  const chats = Chat.find({ operator: operatorId });
+  const chats = await Chat.find({ operator: operatorId })
+    .populate({
+      path: "operator",
+      select: "fullName profilePicture",
+    })
+    .populate({
+      path: "user",
+      select: "fullName profilePicture",
+    })
+    .populate({
+      path: "lastMessage",
+      select: "text sender",
+      populate: {
+        path: "sender",
+        select: "fullName profilePicture",
+      },
+    });
   res.status(StatusCodes.OK).json(chats);
 };
 
@@ -62,7 +78,22 @@ export const getSingleChat = async (req, res) => {
   if (!chatId) {
     throw new CustomError.BadRequestError("ChatId needs to be provided");
   }
-  const chat = await Chat.findOne({ _id: chatId });
+  const chat = await Chat.findOne({ _id: chatId })
+    .populate({
+      path: "operator",
+      select: "fullName profilePicture",
+    })
+    .populate({
+      path: "user",
+      select: "fullName profilePicture",
+    })
+    .populate({
+      path: "lastMessage",
+      populate: {
+        path: "sender",
+        select: "fullName profilePicture",
+      },
+    });
   if (!chat) {
     throw new CustomError.BadRequestError("Chat Not Found");
   }
