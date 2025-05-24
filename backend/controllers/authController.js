@@ -40,7 +40,9 @@ export const loginUser = async (req, res) => {
       user: tokenUser,
       refreshToken: exsistingToken.refreshToken,
     });
-    return res.status(StatusCodes.OK).json({ msg: "Login Successfully" });
+    return res
+      .status(StatusCodes.OK)
+      .json({ msg: "Login Successfully", currentUser: tokenUser });
   }
   const refreshToken = crypto.randomBytes(64).toString("hex");
   const ip = req.ip;

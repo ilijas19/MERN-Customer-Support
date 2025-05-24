@@ -3,7 +3,7 @@ import { Outlet } from "react-router-dom";
 
 const App = () => {
   return (
-    <div className="">
+    <div className="bg-gray-800 min-h-screen text-white">
       <ToastContainer />
       <Outlet />
     </div>
