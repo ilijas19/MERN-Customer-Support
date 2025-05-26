@@ -1,9 +1,9 @@
 import { useSelector } from "react-redux";
-import type { RootState } from "../redux/store";
+import type { RootState } from "../../redux/store";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 
-const UserPage = () => {
+const UserDash = () => {
   const { currentUser } = useSelector((state: RootState) => state.auth);
   const navigate = useNavigate();
 
@@ -13,6 +13,6 @@ const UserPage = () => {
     }
   }, [currentUser]);
 
-  return <div>UserPage</div>;
+  return <div>UserDash</div>;
 };
-export default UserPage;
+export default UserDash;

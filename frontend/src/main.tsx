@@ -13,12 +13,13 @@ import Register from "./pages/auth/Register.tsx";
 import AuthRoute from "./components/Routes/AuthRoute.tsx";
 import { Provider } from "react-redux";
 import { store } from "./redux/store.ts";
-import UserPage from "./pages/user/UserPage.tsx";
-import OperatorPage from "./pages/operator/OperatorPage.tsx";
-import AdminPage from "./pages/admin/AdminPage.tsx";
+import UserDash from "./pages/user/UserDash.tsx";
+import OperatorDash from "./pages/operator/OperatorDash.tsx";
+import AdminDash from "./pages/admin/AdminDash.tsx";
 import RoleRedirect from "./components/RoleRedirect.tsx";
 import AdminRoute from "./components/Routes/AdminRoute.tsx";
 import OperatorRoute from "./components/Routes/OperatorRoute.tsx";
+// import OperatorsPage from "./pages/admin/OperatorsPage.tsx";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -29,17 +30,17 @@ const router = createBrowserRouter(
       {/* USER ROUTES */}
       <Route path="/" element={<AuthRoute />}>
         <Route index element={<RoleRedirect />} />
-        <Route path="user-dashboard" element={<UserPage />} />
+        <Route path="user-dashboard" element={<UserDash />} />
       </Route>
 
       {/* OPERATOR ROUTES */}
       <Route path="operator-dashboard" element={<OperatorRoute />}>
-        <Route index element={<OperatorPage />} />
+        <Route index element={<OperatorDash />} />
       </Route>
 
       {/* ADMIN ROUTES */}
       <Route path="admin-dashboard" element={<AdminRoute />}>
-        <Route index element={<AdminPage />} />
+        <Route index element={<AdminDash />} />
       </Route>
     </Route>
   )

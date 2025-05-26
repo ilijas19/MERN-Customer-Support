@@ -10,6 +10,7 @@ import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 import { setCurrentUser } from "../../redux/features/authSlice";
 import Loader from "../../components/Loader";
+import type { Roles } from "../../types";
 
 const Login = () => {
   const { data: currentUser, isLoading: currentUserLoading } =
@@ -38,6 +39,26 @@ const Login = () => {
       } else {
         toast.error("Something Went Wrong");
       }
+    }
+  };
+
+  const setCredentials = (role: Roles) => {
+    switch (role) {
+      case "admin": {
+        setEmail("ilijagocic19@gmail.com");
+        setPassword("123456");
+        break;
+      }
+      case "operator":
+        setEmail("operator1@gmail.com");
+        setPassword("1234");
+        break;
+      case "user":
+        setEmail("user1@gmail.com");
+        setPassword("123456");
+        break;
+      default:
+        break;
     }
   };
 
@@ -88,6 +109,30 @@ const Login = () => {
         >
           Sign In
         </button>
+        <h3 className="mt-2 text-gray-400">Role As</h3>
+        <div className="flex gap-2">
+          <button
+            type="button"
+            onClick={() => setCredentials("admin")}
+            className="bg-gray-800 rounded text-sky-600 font-semibold px-3 cursor-pointer"
+          >
+            Admin
+          </button>
+          <button
+            type="button"
+            onClick={() => setCredentials("operator")}
+            className="bg-gray-800 rounded text-sky-600 font-semibold px-3 cursor-pointer"
+          >
+            Operator
+          </button>
+          <button
+            type="button"
+            onClick={() => setCredentials("user")}
+            className="bg-gray-800 rounded text-sky-600 font-semibold px-3 cursor-pointer"
+          >
+            User
+          </button>
+        </div>
       </form>
       <p className="text-center mt-1">
         Not a member?{" "}

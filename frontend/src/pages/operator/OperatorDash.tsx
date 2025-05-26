@@ -1,9 +1,9 @@
 import { useSelector } from "react-redux";
-import type { RootState } from "../redux/store";
+import type { RootState } from "../../redux/store";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 
-const OperatorPage = () => {
+const OperatorDash = () => {
   const { currentUser } = useSelector((state: RootState) => state.auth);
   const navigate = useNavigate();
 
@@ -15,4 +15,4 @@ const OperatorPage = () => {
 
   return <div>Opertror page</div>;
 };
-export default OperatorPage;
+export default OperatorDash;
