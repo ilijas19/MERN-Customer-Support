@@ -14,7 +14,7 @@ export type MessageRes = {
 
 export type UserInfo = {
   fullName: string;
-  profilePicture: String;
+  profilePicture: string;
   _id: string;
 };
 

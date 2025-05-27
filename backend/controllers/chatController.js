@@ -23,7 +23,9 @@ const createChat = async (req, res) => {
 
   const operator = await User.findOne({ _id: req.user.userId });
   operator.chats.push(chat._id);
+  user.joinedChat = chat._id;
   await operator.save();
+  await user.save();
   res.status(StatusCodes.CREATED).json({ msg: "Chat Created", chat });
 };
 
@@ -36,8 +38,19 @@ const deleteChat = async (req, res) => {
   if (!chat) {
     throw new CustomError.NotFoundError("You dont have chat with specified id");
   }
-  await chat.deleteOne();
-  await Message.deleteMany({ chat: chatId });
+  const user = await User.findOne({ _id: chat.user });
+  const operator = await User.findOne({ _id: req.user.userId });
+
+  operator.chats = operator.chats.filter((chat) => chat.toString() !== chatId);
+  user.joinedChat = null;
+
+  await Promise.all([
+    operator.save(),
+    user.save(),
+    chat.deleteOne(),
+    Message.deleteMany({ chat: chatId }),
+  ]);
+
   res.status(StatusCodes.OK).json({ msg: "Chat Deleted" });
 };
 

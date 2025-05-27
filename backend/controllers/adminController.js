@@ -45,6 +45,13 @@ export const getSingleUser = async (req, res) => {
         path: "user",
         select: "profilePicture fullName",
       },
+      populate: {
+        path: "lastMessage",
+        populate: {
+          path: "sender",
+          select: "profilePicture fullName",
+        },
+      },
     });
   if (!user) {
     throw new CustomError.NotFoundError("User Not Found");

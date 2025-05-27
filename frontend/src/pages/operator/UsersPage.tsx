@@ -6,6 +6,7 @@ import Modal from "../../components/Modal";
 import AddOperatorForm from "../../components/Forms/AddOperatorForm";
 import DeleteUserForm from "../../components/Forms/DeleteUserForm";
 import type { User } from "../../types";
+import { useNavigate } from "react-router-dom";
 
 const UsersPage = () => {
   const [page, setPage] = useState<number>(1);
@@ -14,6 +15,8 @@ const UsersPage = () => {
     useState<boolean>(false);
   const [isDeleteModalOpen, setDeleteModalOpen] = useState<boolean>(false);
   const [deletingUser, setDeletingUser] = useState<User>();
+
+  const navigate = useNavigate();
 
   const {
     data: users,
@@ -79,7 +82,10 @@ const UsersPage = () => {
           </thead>
           <tbody>
             {users?.users.map((user) => (
-              <tr className="border-b border-gray-700 hover:bg-gray-800 transition-all duration-300">
+              <tr
+                onClick={() => navigate(`/profile/${user._id}`)}
+                className="border-b border-gray-700 hover:bg-gray-800 transition-all duration-300"
+              >
                 <td className="py-2 place-items-center  border-gray-700">
                   <img
                     src={user.profilePicture}
