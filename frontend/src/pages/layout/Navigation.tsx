@@ -3,7 +3,12 @@ import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "../../redux/store";
 import { useState } from "react";
 import { MdClose } from "react-icons/md";
-import { FaUser, FaUserAstronaut, FaUserFriends } from "react-icons/fa";
+import {
+  FaFacebookMessenger,
+  FaUser,
+  FaUserAstronaut,
+  FaUserFriends,
+} from "react-icons/fa";
 import { BsThreeDots } from "react-icons/bs";
 import { capitalize } from "../../utils/capitalize";
 import { Link, useNavigate } from "react-router-dom";
@@ -76,16 +81,19 @@ const Navigation = () => {
           {currentUser.role === "admin" && (
             <>
               <Link
-                to={"/operators"}
+                to={"/operatorsList"}
                 className="flex items-center gap-4 cursor-pointer px-4 py-3 hover:bg-gray-600/60 rounded-lg transition-all"
               >
                 <FaUserAstronaut className="text-sky-500" size={20} />
                 <span className="text-base font-medium">Manage Operators</span>
               </Link>
-              <li className="flex items-center gap-4 cursor-pointer px-4 py-3 hover:bg-gray-600/60 rounded-lg transition-all">
+              <Link
+                to={"/usersList"}
+                className="flex items-center gap-4 cursor-pointer px-4 py-3 hover:bg-gray-600/60 rounded-lg transition-all"
+              >
                 <FaUser className="text-sky-500" size={20} />
                 <span className="text-base font-medium">Manage Users</span>
-              </li>
+              </Link>
             </>
           )}
           {currentUser.role === "operator" && (
@@ -99,6 +107,18 @@ const Navigation = () => {
               </Link>
             </>
           )}
+          {currentUser.role === "user" && (
+            <>
+              <Link
+                to={"/chat"}
+                className="flex items-center gap-4 cursor-pointer px-4 py-3 hover:bg-gray-600/60 rounded-lg transition-all"
+              >
+                <FaFacebookMessenger className="text-sky-500" size={20} />
+                <span className="text-base font-medium">Chat</span>
+              </Link>
+            </>
+          )}
+
           <Link
             to={"/profile"}
             className="flex items-center gap-4 cursor-pointer px-4 py-3 hover:bg-gray-600/60 rounded-lg transition-all"
