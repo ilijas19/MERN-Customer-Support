@@ -13,7 +13,7 @@ const adminApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getAllUsers: builder.query<GetAllUsersRes, GetAllUsersArg>({
       query: ({ page = 1, role = "", fullName = "" }) => ({
-        url: `${ADMIN_URL}users/?page=${page}&role=${role}&fullName=${fullName}`,
+        url: `${ADMIN_URL}/users/?page=${page}&role=${role}&fullName=${fullName}`,
       }),
     }),
     getSingleUser: builder.query<User, string>({

@@ -20,6 +20,10 @@ const createChat = async (req, res) => {
     throw new CustomError.BadRequestError("User is already in chat");
   }
   const chat = await Chat.create({ operator: req.user.userId, user: userId });
+
+  const operator = await User.findOne({ _id: req.user.userId });
+  operator.chats.push(chat._id);
+  await operator.save();
   res.status(StatusCodes.CREATED).json({ msg: "Chat Created", chat });
 };
 

@@ -37,7 +37,15 @@ export const getSingleUser = async (req, res) => {
   if (!userId) {
     throw new CustomError.BadRequestError("userId needs to be provided");
   }
-  const user = await User.findOne({ _id: userId }).select("-password");
+  const user = await User.findOne({ _id: userId })
+    .select("-password")
+    .populate({
+      path: "chats",
+      populate: {
+        path: "user",
+        select: "profilePicture fullName",
+      },
+    });
   if (!user) {
     throw new CustomError.NotFoundError("User Not Found");
   }

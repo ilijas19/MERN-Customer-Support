@@ -28,6 +28,8 @@ const Navigation = () => {
       const res = await logoutApiHandler().unwrap();
       dispatch(logout());
       dispatch(apiSlice.util.resetApiState());
+      setDropdownOpen(false);
+      setMenuOpen(false);
       navigate("/login");
       toast.success(res.msg);
     } catch (error) {
@@ -42,6 +44,7 @@ const Navigation = () => {
   return (
     currentUser && (
       <>
+        {/* Navigation bar */}
         <nav className="border-b  border-gray-700 px-3 py-2 flex items-center justify-between shadow-lg">
           <h2 className="text-xl font-semibold text-sky-600 ">
             Customer Support
@@ -70,22 +73,44 @@ const Navigation = () => {
             Menu
           </h2>
 
-          <li className="flex items-center gap-4 cursor-pointer px-4 py-3 hover:bg-gray-600/60 rounded-lg transition-all">
-            <FaUserAstronaut className="text-sky-500" size={20} />
-            <span className="text-base font-medium">Manage Operators</span>
-          </li>
-          <li className="flex items-center gap-4 cursor-pointer px-4 py-3 hover:bg-gray-600/60 rounded-lg transition-all">
-            <FaUser className="text-sky-500" size={20} />
-            <span className="text-base font-medium">Manage Users</span>
-          </li>
-          <li className="flex items-center gap-4 cursor-pointer px-4 py-3 hover:bg-gray-600/60 rounded-lg transition-all">
+          {currentUser.role === "admin" && (
+            <>
+              <Link
+                to={"/operators"}
+                className="flex items-center gap-4 cursor-pointer px-4 py-3 hover:bg-gray-600/60 rounded-lg transition-all"
+              >
+                <FaUserAstronaut className="text-sky-500" size={20} />
+                <span className="text-base font-medium">Manage Operators</span>
+              </Link>
+              <li className="flex items-center gap-4 cursor-pointer px-4 py-3 hover:bg-gray-600/60 rounded-lg transition-all">
+                <FaUser className="text-sky-500" size={20} />
+                <span className="text-base font-medium">Manage Users</span>
+              </li>
+            </>
+          )}
+          {currentUser.role === "operator" && (
+            <>
+              <Link
+                to={"/operatorChat"}
+                className="flex items-center gap-4 cursor-pointer px-4 py-3 hover:bg-gray-600/60 rounded-lg transition-all"
+              >
+                <FaUserAstronaut className="text-sky-500" size={20} />
+                <span className="text-base font-medium">Operator Chat</span>
+              </Link>
+            </>
+          )}
+          <Link
+            to={"/profile"}
+            className="flex items-center gap-4 cursor-pointer px-4 py-3 hover:bg-gray-600/60 rounded-lg transition-all"
+          >
             <FaUserFriends className="text-sky-500" size={20} />
             <span className="text-base font-medium">Profile</span>
-          </li>
+          </Link>
 
+          {/* profile div */}
           <div className="mt-auto flex items-center gap-3 bg-gray-800 px-3 py-2 rounded-xl relative">
             <img
-              src=""
+              src="s"
               alt="User"
               className="h-10 w-10 rounded-full object-cover bg-gray-600"
             />

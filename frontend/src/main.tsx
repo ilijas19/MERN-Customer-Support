@@ -13,13 +13,13 @@ import Register from "./pages/auth/Register.tsx";
 import AuthRoute from "./components/Routes/AuthRoute.tsx";
 import { Provider } from "react-redux";
 import { store } from "./redux/store.ts";
-import UserDash from "./pages/user/UserDash.tsx";
-import OperatorDash from "./pages/operator/OperatorDash.tsx";
-import AdminDash from "./pages/admin/AdminDash.tsx";
-import RoleRedirect from "./components/RoleRedirect.tsx";
 import AdminRoute from "./components/Routes/AdminRoute.tsx";
 import OperatorRoute from "./components/Routes/OperatorRoute.tsx";
-// import OperatorsPage from "./pages/admin/OperatorsPage.tsx";
+import OperatorsPage from "./pages/admin/OperatorsPage.tsx";
+import Profile from "./pages/user/Profile.tsx";
+import RedirectRoute from "./components/Routes/RedirectRoute.tsx";
+import UsersPage from "./pages/operator/UsersPage.tsx";
+import UsersProfile from "./pages/admin/UsersProfile.tsx";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -29,18 +29,21 @@ const router = createBrowserRouter(
 
       {/* USER ROUTES */}
       <Route path="/" element={<AuthRoute />}>
-        <Route index element={<RoleRedirect />} />
-        <Route path="user-dashboard" element={<UserDash />} />
+        <Route index element={<RedirectRoute />} />
+        <Route path="profile" element={<Profile />} />
+        <Route path="chat" element={<div>chat</div>} />
       </Route>
 
       {/* OPERATOR ROUTES */}
-      <Route path="operator-dashboard" element={<OperatorRoute />}>
-        <Route index element={<OperatorDash />} />
+      <Route path="" element={<OperatorRoute />}>
+        <Route path="operatorChat" element={<div>operator chat</div>} />
       </Route>
 
       {/* ADMIN ROUTES */}
-      <Route path="admin-dashboard" element={<AdminRoute />}>
-        <Route index element={<AdminDash />} />
+      <Route path="" element={<AdminRoute />}>
+        <Route path="operatorsList" element={<OperatorsPage />} />
+        <Route path="usersList" element={<UsersPage />} />
+        <Route path="profile/:id" element={<UsersProfile />} />
       </Route>
     </Route>
   )
