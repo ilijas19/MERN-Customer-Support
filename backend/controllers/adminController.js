@@ -2,6 +2,7 @@ import User from "../model/User.js";
 import { StatusCodes } from "http-status-codes";
 import CustomError from "../errors/error-index.js";
 import Chat from "../model/Chat.js";
+import Message from "../model/Message.js";
 
 export const getAllUsers = async (req, res) => {
   const { page = 1, role, fullName } = req.query;
@@ -131,6 +132,30 @@ export const createOperatorAccount = async (req, res) => {
 export const deleteAccount = async (req, res) => {
   const { id: userId } = req.params;
 
-  await User.findOneAndDelete({ _id: userId });
-  res.status(StatusCodes.OK).json({ msg: "Account Deleted" });
+  const user = await User.findOne({ _id: userId });
+  if (!user) {
+    throw new CustomError.NotFoundError("User not found.");
+  }
+
+  if (user.role === "operator") {
+    const chats = await Chat.find({ operator: userId });
+
+    const chatIds = chats.map((chat) => chat._id);
+    await Message.deleteMany({ chat: { $in: chatIds } });
+
+    await Chat.deleteMany({ operator: userId });
+  }
+
+  if (user.role === "user" && user.joinedChat) {
+    const chat = await Chat.findOne({ user: userId });
+
+    if (chat) {
+      await Message.deleteMany({ chat: chat._id });
+      await chat.deleteOne();
+    }
+  }
+
+  await User.deleteOne({ _id: userId });
+
+  res.status(StatusCodes.OK).json({ msg: "Account deleted successfully." });
 };
