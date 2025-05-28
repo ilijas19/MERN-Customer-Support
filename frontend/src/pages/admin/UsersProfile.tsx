@@ -27,7 +27,7 @@ const UsersProfile = () => {
   }
 
   return (
-    <section className="max-w-[900px] mx-auto sm:mt-10 mt-3 px-4">
+    <section className="max-w-[900px] mx-auto sm:mt-10 mt-3 px-4 w-full">
       {/* User Info */}
       <div className="bg-gray-800 text-white shadow-2xl rounded-xl p-6 flex flex-col sm:flex-row items-center gap-6">
         <img

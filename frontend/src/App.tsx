@@ -4,9 +4,9 @@ import Navigation from "./pages/layout/Navigation";
 
 const App = () => {
   return (
-    <div className="bg-gradient-to-b from-gray-800 to-gray-900 min-h-screen text-white">
+    <div className="bg-gradient-to-b from-gray-800 to-gray-900 min-h-screen text-white flex flex-col">
       <Navigation />
-      <div>
+      <div className="flex-1  flex">
         <ToastContainer />
         <Outlet />
       </div>

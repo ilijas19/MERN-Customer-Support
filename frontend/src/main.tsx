@@ -20,6 +20,7 @@ import Profile from "./pages/user/Profile.tsx";
 import RedirectRoute from "./components/Routes/RedirectRoute.tsx";
 import UsersPage from "./pages/operator/UsersPage.tsx";
 import UsersProfile from "./pages/admin/UsersProfile.tsx";
+import OperatorChat from "./pages/operator/OperatorChat.tsx";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -36,7 +37,7 @@ const router = createBrowserRouter(
 
       {/* OPERATOR ROUTES */}
       <Route path="" element={<OperatorRoute />}>
-        <Route path="operatorChat" element={<div>operator chat</div>} />
+        <Route path="operatorChat" element={<OperatorChat />} />
       </Route>
 
       {/* ADMIN ROUTES */}

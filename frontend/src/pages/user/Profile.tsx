@@ -47,7 +47,7 @@ const Profile = () => {
     return <Loader />;
   }
   return (
-    <section className="max-w-[900px] mx-auto sm:mt-4 flex flex-col">
+    <section className="max-w-[900px] mx-auto  flex flex-col w-full p-2">
       <div className="bg-gray-800 text-white shadow-2xl sm:rounded-xl p-6 flex flex-col sm:flex-row items-center gap-6 relative">
         <img
           src={user?.profilePicture}

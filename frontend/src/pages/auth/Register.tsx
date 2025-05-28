@@ -50,7 +50,7 @@ const Register = () => {
   }
 
   return (
-    <section className="py-10 mx-3">
+    <section className="py-10 mx-3 w-full">
       <form
         onSubmit={onSubmit}
         className="max-w-[600px] mx-auto shadow-xl p-4 bg-gray-700 rounded-lg flex flex-col  "
