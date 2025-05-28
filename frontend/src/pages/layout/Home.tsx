@@ -20,9 +20,9 @@ const Home = () => {
     }
   }, [currentUser]);
   return (
-    <>
+    <section className="max-w-[900px] mx-auto">
       <h2 className="text-2xl m-4 mb-5">Welcome, {currentUser?.fullName}</h2>
-      <div className="text-white flex flex-wrap justify-around px-6 max-w-[900px] mx-auto gap-4">
+      <div className="text-white flex flex-wrap justify-around px-6  gap-4">
         <DashBox
           currentUserRole={currentUser?.role}
           allowedRoles={["operator"]}
@@ -52,7 +52,7 @@ const Home = () => {
           icon={<FaUser />}
         />
       </div>
-    </>
+    </section>
   );
 };
 export default Home;

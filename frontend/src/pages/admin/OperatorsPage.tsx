@@ -34,7 +34,7 @@ const OperatorsPage = () => {
   }
 
   return (
-    <section className="p-4">
+    <section className="p-4 max-w-[900px] mx-auto">
       <div className="flex sm:justify-between not-sm:flex-col not-sm:px-1 not-sm:gap-2 sm:items-center">
         <div className="flex flex-col gap-1">
           <h3 className="sm:text-2xl  text-xl">Manage Operators</h3>
