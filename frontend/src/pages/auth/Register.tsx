@@ -50,7 +50,7 @@ const Register = () => {
   }
 
   return (
-    <section className="py-10">
+    <section className="py-10 mx-3">
       <form
         onSubmit={onSubmit}
         className="max-w-[600px] mx-auto shadow-xl p-4 bg-gray-700 rounded-lg flex flex-col  "
@@ -122,7 +122,7 @@ const Register = () => {
       </form>
       <p className="text-center mt-1">
         Already a member?{" "}
-        <Link to={"/register"} className="text-sky-600">
+        <Link to={"/login"} className="text-sky-600">
           Sign In
         </Link>
       </p>

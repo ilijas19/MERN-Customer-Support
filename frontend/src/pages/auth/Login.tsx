@@ -73,7 +73,7 @@ const Login = () => {
   }
 
   return (
-    <section className="py-10">
+    <section className="py-10 mx-3">
       <form
         onSubmit={onSubmit}
         className="max-w-[600px] mx-auto shadow-xl p-4 bg-gray-700 rounded-lg flex flex-col  "

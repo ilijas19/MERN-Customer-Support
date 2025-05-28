@@ -81,6 +81,7 @@ const Navigation = () => {
           {currentUser.role === "admin" && (
             <>
               <Link
+                onClick={() => setMenuOpen(false)}
                 to={"/operatorsList"}
                 className="flex items-center gap-4 cursor-pointer px-4 py-3 hover:bg-gray-600/60 rounded-lg transition-all"
               >
@@ -88,6 +89,7 @@ const Navigation = () => {
                 <span className="text-base font-medium">Manage Operators</span>
               </Link>
               <Link
+                onClick={() => setMenuOpen(false)}
                 to={"/usersList"}
                 className="flex items-center gap-4 cursor-pointer px-4 py-3 hover:bg-gray-600/60 rounded-lg transition-all"
               >
@@ -99,6 +101,7 @@ const Navigation = () => {
           {currentUser.role === "operator" && (
             <>
               <Link
+                onClick={() => setMenuOpen(false)}
                 to={"/operatorChat"}
                 className="flex items-center gap-4 cursor-pointer px-4 py-3 hover:bg-gray-600/60 rounded-lg transition-all"
               >
@@ -110,6 +113,7 @@ const Navigation = () => {
           {currentUser.role === "user" && (
             <>
               <Link
+                onClick={() => setMenuOpen(false)}
                 to={"/chat"}
                 className="flex items-center gap-4 cursor-pointer px-4 py-3 hover:bg-gray-600/60 rounded-lg transition-all"
               >
@@ -120,6 +124,7 @@ const Navigation = () => {
           )}
 
           <Link
+            onClick={() => setMenuOpen(false)}
             to={"/profile"}
             className="flex items-center gap-4 cursor-pointer px-4 py-3 hover:bg-gray-600/60 rounded-lg transition-all"
           >

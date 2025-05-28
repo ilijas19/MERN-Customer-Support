@@ -76,3 +76,20 @@ export type GetAllUsersArg = {
   page: number;
   fullName: string;
 };
+// USER
+export type UpdateProfileArgs = {
+  fullName?: string;
+  email?: string;
+  profilePicture?: string;
+};
+
+export type UpdatePasswordArgs = {
+  oldPassword?: string;
+  newPassword?: string;
+  reNewPassword?: string;
+};
+
+export type UploadRes = {
+  msg: string;
+  url: string;
+};
