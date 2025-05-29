@@ -21,12 +21,24 @@ const createChat = async (req, res) => {
   }
   const chat = await Chat.create({ operator: req.user.userId, user: userId });
 
+  const populatedChat = await Chat.findOne({ _id: chat._id })
+    .populate({
+      path: "operator",
+      select: "fullName profilePicture",
+    })
+    .populate({
+      path: "user",
+      select: "fullName profilePicture",
+    });
+
   const operator = await User.findOne({ _id: req.user.userId });
   operator.chats.push(chat._id);
   user.joinedChat = chat._id;
   await operator.save();
   await user.save();
-  res.status(StatusCodes.CREATED).json({ msg: "Chat Created", chat });
+  res
+    .status(StatusCodes.CREATED)
+    .json({ msg: "Chat Created", chat: populatedChat });
 };
 
 const deleteChat = async (req, res) => {
@@ -97,11 +109,11 @@ const getSingleChat = async (req, res) => {
   })
     .populate({
       path: "operator",
-      select: "-password -chats",
+      select: "fullName profilePicture",
     })
     .populate({
       path: "user",
-      select: "-password -chats",
+      select: "fullName profilePicture",
     })
     .populate({
       path: "lastMessage",
@@ -111,7 +123,7 @@ const getSingleChat = async (req, res) => {
       },
     });
   if (!chat) {
-    throw new CustomError.NotFoundError("Chat not found in your chats");
+    throw new CustomError.NotFoundError("Chat not foun`d in your chats");
   }
   res.status(StatusCodes.OK).json(chat);
 };
