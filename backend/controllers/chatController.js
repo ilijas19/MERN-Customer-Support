@@ -87,7 +87,8 @@ const getMyChats = async (req, res) => {
         path: "sender",
         select: "fullName",
       },
-    });
+    })
+    .sort("-createdAt");
 
   res.status(StatusCodes.OK).json({
     page: Number(page),
@@ -129,6 +130,10 @@ const getSingleChat = async (req, res) => {
 };
 
 const getChatMessages = async (req, res) => {
+  const { page = 1 } = req.query;
+  const limit = 10;
+  const skip = (page - 1) * limit;
+
   const { id: chatId } = req.params;
   if (!chatId) {
     throw new CustomError.BadRequestError("ChatId needs to be provided");
@@ -137,11 +142,22 @@ const getChatMessages = async (req, res) => {
   if (!chat) {
     throw new CustomError.NotFoundError("Chat not found in your chats");
   }
-  const messages = await Message.find({ chat: chatId }).populate({
-    path: "sender",
-    select: "username profilePicture",
-  });
-  res.status(StatusCodes.OK).json({ messages });
+  const messages = await Message.find({ chat: chatId })
+    .populate({
+      path: "sender",
+      select: "fullName profilePicture",
+    })
+    .skip(skip)
+    .limit(limit)
+    .sort({ createdAt: -1 });
+
+  const totalMessages = await Message.countDocuments({ chat: chatId });
+  const totalPages = Math.ceil(totalMessages / limit);
+  const hasNextPage = page < totalPages;
+
+  res
+    .status(StatusCodes.OK)
+    .json({ nbHits: messages.length, page, hasNextPage, messages });
 };
 
 const closeChat = async (req, res) => {

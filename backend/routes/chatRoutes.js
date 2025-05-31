@@ -16,9 +16,9 @@ import {
 } from "../middleware/authentication.js";
 const router = express.Router();
 
-router.use(authenticateUser, authorizePermision("operator"));
+router.post("/message", authenticateUser, createMessageApi);
 
-router.post("/message", createMessageApi);
+router.use(authenticateUser, authorizePermision("operator"));
 
 router.route("/").post(createChat).get(getMyChats);
 router.post("/close/:id", closeChat);

@@ -93,3 +93,39 @@ export type UploadRes = {
   msg: string;
   url: string;
 };
+// OPERATOR
+export type CreateChatRes = MessageRes & {
+  chat: Chat;
+};
+
+export type GetMyChatsRes = {
+  page: number;
+  totalChats: number;
+  hasNextPage: boolean;
+  chats: Chat[];
+};
+
+export type getChatMessagesRes = Omit<GetMyChatsRes, "chats"> & {
+  messages: Message[];
+};
+
+// USER
+export type UserChatRes = {
+  page: number;
+  hasNextPage: boolean;
+  nbHits: number;
+  chat: Chat;
+  chatMessages: Message[];
+};
+
+export type getMyMessagesRes = {
+  page: number;
+  hasNextPage: boolean;
+  nbHits: number;
+  chatMessages: Message[];
+};
+
+export type getMyMessagesArg = {
+  page: number;
+  chatId: string;
+};

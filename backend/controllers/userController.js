@@ -90,3 +90,95 @@ export const updatePassword = async (req, res) => {
   await user.save();
   res.status(StatusCodes.OK).json({ msg: "Password Updated" });
 };
+
+export const getMyChat = async (req, res) => {
+  const user = await User.findOne({
+    _id: req.user.userId,
+    role: "user",
+  });
+  if (!user) {
+    throw new CustomError.BadRequestError("User Not Found");
+  }
+  if (!user.joinedChat) {
+    throw new CustomError.BadRequestError("You Have No Active Conversation");
+  }
+
+  const chat = await Chat.findOne({ _id: user.joinedChat })
+    .populate({
+      path: "operator",
+      select: "fullName profilePicture",
+    })
+    .populate({
+      path: "user",
+      select: "fullName profilePicture",
+    });
+
+  if (!chat) {
+    throw new CustomError.BadRequestError("Chat Not Found");
+  }
+  const { page = 1 } = req.query;
+  const limit = 10;
+  const skip = (page - 1) * limit;
+
+  const chatMessages = await Message.find({ chat: chat._id })
+    .sort({ createdAt: -1 })
+    .populate({
+      path: "sender",
+      select: "fullName profilePicture",
+    })
+    .skip(skip)
+    .limit(limit);
+
+  const totalMessages = await Message.countDocuments({ chat: chat._id });
+  const totalPages = Math.ceil(totalMessages / limit);
+  const hasNextPage = page < totalPages;
+
+  res.status(StatusCodes.OK).json({
+    page: +page,
+    hasNextPage,
+    nbHits: chatMessages.length,
+    chat,
+    chatMessages,
+  });
+};
+
+export const getMyChatMessages = async (req, res) => {
+  const { id: chatId } = req.params;
+  if (!chatId) {
+    throw new CustomError.BadRequestError("Chat id needs to be provided");
+  }
+  const user = await User.findOne({
+    _id: req.user.userId,
+    role: "user",
+  });
+  if (!user) {
+    throw new CustomError.BadRequestError("User Not Found");
+  }
+  if (!user.joinedChat) {
+    throw new CustomError.BadRequestError("You Have No Active Conversation");
+  }
+
+  const { page = 1 } = req.query;
+  const limit = 10;
+  const skip = (page - 1) * limit;
+
+  const chatMessages = await Message.find({ chat: chatId })
+    .sort({ createdAt: -1 })
+    .populate({
+      path: "sender",
+      select: "fullName profilePicture",
+    })
+    .skip(skip)
+    .limit(limit);
+
+  const totalMessages = await Message.countDocuments({ chat: chatId });
+  const totalPages = Math.ceil(totalMessages / limit);
+  const hasNextPage = page < totalPages;
+
+  res.status(StatusCodes.OK).json({
+    page: +page,
+    hasNextPage,
+    nbHits: chatMessages.length,
+    chatMessages,
+  });
+};

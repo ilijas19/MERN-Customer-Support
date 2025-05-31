@@ -12,7 +12,7 @@ const OperatorChats = ({ operatorId }: Props) => {
   }
 
   return (
-    <ul className="flex flex-col">
+    <ul className="flex flex-col gap-2">
       {chats?.map((chat) => (
         <li key={chat._id} className="bg-gray-700 p-3 rounded-lg flex gap-3">
           <img

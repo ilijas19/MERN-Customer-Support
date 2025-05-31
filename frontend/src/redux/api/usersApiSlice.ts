@@ -1,8 +1,11 @@
 import type {
+  getMyMessagesArg,
+  getMyMessagesRes,
   MessageRes,
   UpdatePasswordArgs,
   UpdateProfileArgs,
   User,
+  UserChatRes,
 } from "../../types";
 import { USER_URL } from "../constants";
 import { apiSlice } from "./apiSlice";
@@ -35,6 +38,16 @@ const usersApiSlice = apiSlice.injectEndpoints({
         body: { oldPassword, newPassword, reNewPassword },
       }),
     }),
+    getMyChat: builder.query<UserChatRes, { page: number }>({
+      query: ({ page = 1 }) => ({
+        url: `${USER_URL}/myChat?page=${page}`,
+      }),
+    }),
+    getMyMessages: builder.query<getMyMessagesRes, getMyMessagesArg>({
+      query: ({ page = 1, chatId }) => ({
+        url: `${USER_URL}/myMessages/${chatId}?page=${page}`,
+      }),
+    }),
   }),
 });
 
@@ -43,4 +56,6 @@ export const {
   useUpdateProfileMutation,
   useDeleteProfileMutation,
   useUpdatePasswordMutation,
+  useGetMyChatQuery,
+  useGetMyMessagesQuery,
 } = usersApiSlice;

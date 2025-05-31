@@ -5,10 +5,15 @@ import {
   updateProfile,
   deleteProfile,
   updatePassword,
+  getMyChat,
+  getMyChatMessages,
 } from "../controllers/userController.js";
 
 const router = express.Router();
 router.use(authenticateUser);
+
+router.get("/myChat", getMyChat);
+router.get("/myMessages/:id", getMyChatMessages);
 
 router.route("/").get(getMyProfile).patch(updateProfile).delete(deleteProfile);
 
