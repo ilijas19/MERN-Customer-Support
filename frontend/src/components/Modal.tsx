@@ -11,7 +11,7 @@ const Modal = ({ isModalOpen, onClose, children }: ModalProps) => {
       <div
         onClick={onClose}
         style={{ background: "rgba(0,0,0,0.5)" }}
-        className="fixed inset-0 flex justify-center p-1 "
+        className="fixed inset-0 flex justify-center p-1 z-50 "
       >
         <div
           onClick={(e) => e.stopPropagation()}

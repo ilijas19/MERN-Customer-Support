@@ -9,11 +9,8 @@ import {
   FaUserAstronaut,
 } from "react-icons/fa";
 import { capitalize } from "../../utils/capitalize";
-import { IoIosChatboxes } from "react-icons/io";
-import OperatorChats from "../../components/operator/OperatorChats";
-import UserActiveChat from "../../components/UserActiveChat";
 
-const UsersProfile = () => {
+const UserInfo = () => {
   const { id } = useParams();
   const { data: user, isLoading, error } = useGetSingleUserQuery(id ?? "");
 
@@ -63,18 +60,7 @@ const UsersProfile = () => {
           </li>
         </ul>
       </div>
-      {/* USER CHAT */}
-      <div className="bg-gray-800 text-white shadow-2xl rounded-xl p-6 flex flex-col  gap-6 mt-4">
-        <h2 className="flex gap-2 items-center text-xl ">
-          <IoIosChatboxes size={26} className="text-sky-500" />
-          Active{" "}
-          {user?.role === "operator" ? `Chats ${user.chats?.length}` : "Chat"}
-        </h2>
-        {user?.role === "operator" && <OperatorChats operatorId={user._id} />}
-        {user?.role === "user" && <UserActiveChat user={user} />}
-      </div>
     </section>
   );
 };
-
-export default UsersProfile;
+export default UserInfo;

@@ -105,6 +105,11 @@ export type GetMyChatsRes = {
   chats: Chat[];
 };
 
+export type GetMyChatsArg = {
+  page: number;
+  isActive: boolean;
+};
+
 export type getChatMessagesRes = Omit<GetMyChatsRes, "chats"> & {
   messages: Message[];
 };

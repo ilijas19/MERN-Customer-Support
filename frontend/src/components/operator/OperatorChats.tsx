@@ -1,5 +1,5 @@
-import { useGetOperatorChatsQuery } from "../redux/api/adminApiSlice";
-import Loader from "./Loader";
+import { useGetOperatorChatsQuery } from "../../redux/api/adminApiSlice";
+import Loader from "../Loader";
 
 type Props = {
   operatorId: string;

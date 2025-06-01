@@ -4,6 +4,7 @@ import type {
   Chat,
   CreateChatRes,
   getChatMessagesRes,
+  GetMyChatsArg,
   GetMyChatsRes,
   getMyMessagesArg,
   MessageRes,
@@ -18,9 +19,9 @@ const operatorApiSlice = apiSlice.injectEndpoints({
         body: { userId },
       }),
     }),
-    getMyChats: builder.query<GetMyChatsRes, { page: number }>({
-      query: ({ page = 1 }) => ({
-        url: `${CHAT_URL}?page=${page}`,
+    getMyChats: builder.query<GetMyChatsRes, GetMyChatsArg>({
+      query: ({ page = 1, isActive }) => ({
+        url: `${CHAT_URL}?page=${page}&isActive=${isActive}`,
       }),
     }),
     getSingleChat: builder.query<Chat, string>({
@@ -37,11 +38,13 @@ const operatorApiSlice = apiSlice.injectEndpoints({
     closeChat: builder.mutation<MessageRes, string>({
       query: (chatId) => ({
         url: `${CHAT_URL}/close/${chatId}`,
+        method: "POST",
       }),
     }),
     openChat: builder.mutation<MessageRes, string>({
       query: (chatId) => ({
         url: `${CHAT_URL}/open/${chatId}`,
+        method: "POST",
       }),
     }),
     getChatMessages: builder.query<getChatMessagesRes, getMyMessagesArg>({

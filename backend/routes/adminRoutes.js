@@ -13,10 +13,11 @@ import {
 } from "../middleware/authentication.js";
 
 const router = express.Router();
+router.route("/user/:id").get(authenticateUser, getSingleUser);
 router.use(authenticateUser, authorizePermision("admin"));
 
 router.route("/operator").post(createOperatorAccount);
-router.route("/user/:id").get(getSingleUser).delete(deleteAccount);
+router.route("/user/:id").delete(deleteAccount);
 
 router.get("/operatorChats/:id", getOperatorChats);
 router.get("/users", getAllUsers);

@@ -1,16 +1,18 @@
+import { useDispatch } from "react-redux";
 import type { Chat } from "../../types";
 import { formatTime } from "../../utils/formatTime";
+import { setSelectedChat } from "../../redux/features/chatSlice";
 
 type ChatElProps = {
   chat: Chat;
-  setSelectedChat: (chat: Chat) => void;
 };
 
-const ChatEl = ({ chat, setSelectedChat }: ChatElProps) => {
+const ChatEl = ({ chat }: ChatElProps) => {
+  const dispatch = useDispatch();
   return (
     <li
       onClick={() => {
-        setSelectedChat(chat);
+        dispatch(setSelectedChat(chat));
       }}
       className="px-3 py-2 hover:bg-gray-700 transition-colors cursor-pointer flex gap-2"
     >

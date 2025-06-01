@@ -67,14 +67,18 @@ const deleteChat = async (req, res) => {
 };
 
 const getMyChats = async (req, res) => {
-  const { page = 1 } = req.query;
+  const { page = 1, isActive = true } = req.query;
   const limit = 10;
   const skip = (page - 1) * limit;
 
-  const totalChats = await Chat.countDocuments({ operator: req.user.userId });
+  const queryObject = { operator: req.user.userId, operator: req.user.userId };
+
+  queryObject.isActive = isActive;
+
+  const totalChats = await Chat.countDocuments(queryObject);
   const totalPages = Math.ceil(totalChats / limit);
 
-  const chats = await Chat.find({ operator: req.user.userId })
+  const chats = await Chat.find(queryObject)
     .skip(skip)
     .limit(limit)
     .populate({
