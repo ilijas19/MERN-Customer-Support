@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import type { Message as MessageType } from "../../types";
 import {
   useCloseChatMutation,
+  useDeleteChatMutation,
   useGetChatMessagesQuery,
   useOpenChatMutation,
 } from "../../redux/api/operatorApiSlice";
@@ -16,13 +17,23 @@ import { isApiError } from "../../utils/isApiError";
 import { toast } from "react-toastify";
 import { clearSelectedChat } from "../../redux/features/chatSlice";
 import { useNavigate } from "react-router-dom";
+import Modal from "../Modal";
+import DeleteChatForm from "../Forms/DeleteChatForm";
+import type { Socket } from "socket.io-client";
 
 type ChatTabProps = {
   setChatSidebarOpen: (bool: boolean) => void;
   refetch: () => void;
+  selectedChats: "queue" | "active" | "closed";
+  socket: Socket;
 };
 
-const OperatorChatTab = ({ setChatSidebarOpen, refetch }: ChatTabProps) => {
+const OperatorChatTab = ({
+  setChatSidebarOpen,
+  refetch,
+  selectedChats,
+  socket,
+}: ChatTabProps) => {
   const { currentUser } = useSelector((state: RootState) => state.auth);
   const { selectedChat } = useSelector((state: RootState) => state.chat);
 
@@ -32,6 +43,7 @@ const OperatorChatTab = ({ setChatSidebarOpen, refetch }: ChatTabProps) => {
   const [messagesPage, setMessagesPage] = useState(1);
   const [isChatDropdownOpen, setChatDropdownOpen] = useState(false);
   const [showingMessages, setShowingMessages] = useState<MessageType[]>([]);
+  const [isDeleteChatModalOpen, setDeleteChatModalOpen] = useState(false);
 
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
@@ -59,6 +71,32 @@ const OperatorChatTab = ({ setChatSidebarOpen, refetch }: ChatTabProps) => {
       refetch();
       dispatch(clearSelectedChat());
       setChatDropdownOpen(false);
+      socket.emit("closeChat", selectedChat?.user._id);
+    } catch (error) {
+      if (isApiError(error)) {
+        toast.error(error.data.msg);
+      } else {
+        toast.error("Something Went Wrong");
+      }
+    }
+  };
+
+  const [deleteChatApiHandler, { isLoading: deleteChatLoading }] =
+    useDeleteChatMutation();
+
+  const handleDeleteChat = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    try {
+      const res = await deleteChatApiHandler(selectedChat?._id ?? "").unwrap();
+      toast.success(res.msg);
+      dispatch(clearSelectedChat());
+      //this refetch creates error that cant refetch query that has not been started
+      if (selectedChats !== "queue") {
+        refetch();
+      }
+      socket.emit("closeChat", selectedChat?.user._id);
+
+      setDeleteChatModalOpen(false);
     } catch (error) {
       if (isApiError(error)) {
         toast.error(error.data.msg);
@@ -137,7 +175,7 @@ const OperatorChatTab = ({ setChatSidebarOpen, refetch }: ChatTabProps) => {
                   <button
                     disabled={closeChatLoading}
                     onClick={handleCloseChat}
-                    className="p-1 text-center hover:bg-red-600 hover:text-white transition-all duration-300 cursor-pointer text-red-600"
+                    className="p-1 text-center hover:bg-red-600 hover:text-white transition-all duration-300 cursor-pointer text-white"
                   >
                     Close Chat
                   </button>
@@ -150,6 +188,13 @@ const OperatorChatTab = ({ setChatSidebarOpen, refetch }: ChatTabProps) => {
                     Open Chat
                   </button>
                 )}
+
+                <button
+                  onClick={() => setDeleteChatModalOpen(true)}
+                  className="p-1 border-t border-gray-600 text-center hover:bg-red-600 hover:text-white transition-all duration-300 cursor-pointer text-red-600"
+                >
+                  Delete Chat
+                </button>
               </ul>
             )}
           </>
@@ -167,7 +212,7 @@ const OperatorChatTab = ({ setChatSidebarOpen, refetch }: ChatTabProps) => {
         {messagesLoading && <Loader />}
 
         {/* no messages */}
-        {chatMessages && chatMessages.messages.length === 0 && (
+        {selectedChat && chatMessages && chatMessages.messages.length === 0 && (
           <h2 className="text-center text-gray-500">No messages yet</h2>
         )}
         {/* Load older messages button */}
@@ -232,6 +277,16 @@ const OperatorChatTab = ({ setChatSidebarOpen, refetch }: ChatTabProps) => {
           </div>
         )
       )}
+      <Modal
+        isModalOpen={isDeleteChatModalOpen}
+        onClose={() => setDeleteChatModalOpen(false)}
+      >
+        <DeleteChatForm
+          onClose={() => setDeleteChatModalOpen(false)}
+          handleDeleteChat={handleDeleteChat}
+          deleteChatLoading={deleteChatLoading}
+        />
+      </Modal>
     </div>
   );
 };

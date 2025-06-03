@@ -6,6 +6,7 @@ export type CurrentUser = {
   email: string;
   userId: string;
   role: Roles;
+  profilePicture: string;
 };
 
 export type MessageRes = {
@@ -133,4 +134,9 @@ export type getMyMessagesRes = {
 export type getMyMessagesArg = {
   page: number;
   chatId: string;
+};
+
+// socket io
+export type SocketUser = CurrentUser & {
+  socketId: string;
 };

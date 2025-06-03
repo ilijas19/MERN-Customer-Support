@@ -1,13 +1,26 @@
 import { useEffect, useState } from "react";
 import { FaInfoCircle } from "react-icons/fa";
-import { useGetMyChatsQuery } from "../../redux/api/operatorApiSlice";
+import {
+  useCreateChatMutation,
+  useGetMyChatsQuery,
+} from "../../redux/api/operatorApiSlice";
 import Loader from "../../components/Loader";
 import ChatEl from "../../components/Chat/ChatEl";
 import { RiMenuUnfold4Line } from "react-icons/ri";
 import OperatorChatTab from "../../components/operator/OperatorChatTab";
+import useSocket from "../../hooks/useSocket";
+import { useDispatch, useSelector } from "react-redux";
+import type { RootState } from "../../redux/store";
+import type { Chat, SocketUser } from "../../types";
+import { isApiError } from "../../utils/isApiError";
+import { toast } from "react-toastify";
+import { setSelectedChat } from "../../redux/features/chatSlice";
 
 const OperatorChat = () => {
-  // CHATS
+  const { currentUser } = useSelector((state: RootState) => state.auth);
+  const { socket, connected } = useSocket();
+
+  const dispatch = useDispatch();
 
   const [selectedChats, setSelectedChats] = useState<
     "queue" | "active" | "closed"
@@ -17,6 +30,9 @@ const OperatorChat = () => {
     "queue" | "active" | "closed"
   >("active");
   const [isChatSidebarOpen, setChatSidebarOpen] = useState(false);
+  const [showingChats, setShowingChats] = useState<Chat[]>([]);
+  const [queueUsers, setQueueUsers] = useState<SocketUser[]>([]);
+
   const {
     data: chats,
     isLoading: chatsLoading,
@@ -34,9 +50,55 @@ const OperatorChat = () => {
     { skip: menuChatsQuery === "queue" }
   );
 
+  const [startChatApiHandler, { isLoading: startChatLoading }] =
+    useCreateChatMutation();
+
+  const handleChatStart = async (user: SocketUser) => {
+    try {
+      console.log(user);
+
+      if (startChatLoading) return;
+      const res = await startChatApiHandler({ userId: user.userId }).unwrap();
+      dispatch(setSelectedChat(res.chat));
+      socket.emit("startChat", user.socketId);
+      toast.success(res.msg);
+    } catch (error) {
+      if (isApiError(error)) {
+        toast.error(error.data.msg);
+      } else {
+        toast.error("Something Went Wrong");
+      }
+    }
+  };
+
   useEffect(() => {
-    refetchChats();
-  }, [menuChatsQuery, refetchChats]);
+    if (!chats) return;
+
+    if (menuChatsQuery === "queue") {
+      setShowingChats([]);
+    } else {
+      setShowingChats(chats?.chats);
+      refetchChats();
+    }
+  }, [menuChatsQuery, refetchChats, chats]);
+
+  //SOCKET ID
+  useEffect(() => {
+    if (socket && connected) {
+      socket.emit("getQueueUsers");
+
+      socket.on("updateQueue", (data: SocketUser[]) => {
+        setQueueUsers(data);
+      });
+      return () => {
+        socket.disconnect();
+      };
+    }
+  }, [socket, connected, currentUser]);
+
+  useEffect(() => {
+    // console.log(queueUsers);
+  }, [queueUsers]);
 
   return (
     <section className="max-w-[1200px] grid grid-cols-[1.6fr_3fr] mx-auto relative w-full ">
@@ -84,12 +146,37 @@ const OperatorChat = () => {
             </option>
           </select>
         </div>
-        {/* _chat list */}
+        {/* CHAT LIST */}
         <ul>
           {chatsLoading && <Loader />}
-          {chats?.chats.map((chat) => (
-            <ChatEl key={chat._id} chat={chat} />
+          {showingChats.map((chat) => (
+            <ChatEl
+              key={chat._id}
+              chat={chat}
+              setChatSidebarOpen={setChatSidebarOpen}
+            />
           ))}
+
+          {selectedChats === "queue" &&
+            queueUsers.map((user) => (
+              <li
+                key={user.userId}
+                onClick={() => {
+                  handleChatStart(user);
+                  setChatSidebarOpen(false);
+                }}
+                className="px-3 py-2 hover:bg-gray-700 transition-colors cursor-pointer flex gap-2"
+              >
+                <img
+                  src={user.profilePicture}
+                  className="size-12 rounded-full"
+                />
+                <div>
+                  <p className="font-semibold">{user.fullName}</p>
+                  <p className="text-sm text-gray-400">Start Chat</p>
+                </div>
+              </li>
+            ))}
         </ul>
       </div>
 
@@ -97,6 +184,8 @@ const OperatorChat = () => {
       <OperatorChatTab
         setChatSidebarOpen={setChatSidebarOpen}
         refetch={refetchChats}
+        selectedChats={selectedChats}
+        socket={socket}
       />
     </section>
   );

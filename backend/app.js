@@ -4,6 +4,9 @@ import express from "express";
 import cookieParser from "cookie-parser";
 import { v2 as cloudinary } from "cloudinary";
 import fileUpload from "express-fileupload";
+import { Server } from "socket.io";
+import http from "http";
+import cors from "cors";
 //db
 import connectDb from "./db/connectDb.js";
 //middleware
@@ -15,8 +18,11 @@ import chatRouter from "./routes/chatRoutes.js";
 import adminRouter from "./routes/adminRoutes.js";
 import uploadRouter from "./routes/uploadRoutes.js";
 import userRouter from "./routes/userRoutes.js";
+//socket
+import socketSetup from "./socket/socketSetup.js";
 
 const app = express();
+const server = http.createServer(app);
 
 app.use(express.json());
 app.use(cookieParser(process.env.JWT_SECRET));
@@ -28,6 +34,16 @@ cloudinary.config({
   api_secret: process.env.CLOUD_API_SECRET,
 });
 
+app.use(
+  cors({
+    origin: ["http://localhost:5173"],
+    methods: ["GET", "POST", "PATCH", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true,
+  })
+);
+
+//routes
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/chat", chatRouter);
 app.use("/api/v1/admin", adminRouter);
@@ -37,10 +53,23 @@ app.use("/api/v1/user", userRouter);
 app.use(notFound);
 app.use(errorHandler);
 
+const io = new Server(server, {
+  cors: {
+    origin: ["frontend-origin.ur", "http://localhost:5173"],
+    methods: ["GET", "POST", "PATCH", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true,
+  },
+});
+
+io.on("connection", (socket) => {
+  socketSetup(io, socket);
+});
+
 const port = process.env.PORT || 4999;
 const init = async () => {
   try {
-    app.listen(port, () => {
+    server.listen(port, () => {
       console.log(`Server is running on port ${port}`);
     });
     await connectDb();

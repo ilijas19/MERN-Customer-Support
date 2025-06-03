@@ -14,7 +14,7 @@ const OperatorRoute = () => {
     if (currentUser) {
       dispatch(setCurrentUser(currentUser.currentUser));
     }
-  }, [currentUser]);
+  }, [currentUser, dispatch]);
 
   if (isLoading) {
     return <Loader />;

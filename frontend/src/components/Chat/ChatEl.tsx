@@ -5,14 +5,16 @@ import { setSelectedChat } from "../../redux/features/chatSlice";
 
 type ChatElProps = {
   chat: Chat;
+  setChatSidebarOpen: (bol: boolean) => void;
 };
 
-const ChatEl = ({ chat }: ChatElProps) => {
+const ChatEl = ({ chat, setChatSidebarOpen }: ChatElProps) => {
   const dispatch = useDispatch();
   return (
     <li
       onClick={() => {
         dispatch(setSelectedChat(chat));
+        setChatSidebarOpen(false);
       }}
       className="px-3 py-2 hover:bg-gray-700 transition-colors cursor-pointer flex gap-2"
     >
