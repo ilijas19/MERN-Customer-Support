@@ -35,6 +35,25 @@ const socketSetup = (io, socket) => {
     console.log(`Socket ${socket.id} joined room ${chatId}`);
   });
 
+  socket.on("messageFromClient", (data) => {
+    const message = {
+      _id: Math.random().toString(),
+      chat: data.chatId,
+      sender: {
+        fullName: data.from.fullName,
+        profilePicture: data.from.profilePicture,
+        _id: data.from.userId,
+      },
+      type: data.imageUrl ? "image" : "message",
+      read: false,
+      text: data.text,
+      imageUrl: data.imageUrl || undefined,
+      createdAt: new Date(),
+    };
+
+    io.to(data.chatId).emit("messageFromServer", message);
+  });
+
   socket.on("closeChat", (userId) => {
     const user = getUser(userId);
     io.to(user.socketId).emit("closeChat");

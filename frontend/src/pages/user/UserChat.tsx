@@ -1,4 +1,3 @@
-import { IoSend } from "react-icons/io5";
 import {
   useGetMyChatQuery,
   useGetMyMessagesQuery,
@@ -7,17 +6,21 @@ import Loader from "../../components/Loader";
 import { isApiError } from "../../utils/isApiError";
 import { useEffect, useState, useRef } from "react";
 import Message from "../../components/Chat/Message";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "../../redux/store";
 import type { Message as MessageType } from "../../types";
 import QueueSection from "../../components/User/QueueSection";
 import useSocket from "../../hooks/useSocket";
+import ChatInput from "../../components/Chat/ChatInput";
+import { setSelectedChat } from "../../redux/features/chatSlice";
 
 const UserChat = () => {
   const { currentUser } = useSelector((state: RootState) => state.auth);
   const [showingMessages, setShowingMessages] = useState<MessageType[]>([]);
   const [page, setPage] = useState(1);
   const { socket, connected } = useSocket();
+
+  const dispatch = useDispatch();
 
   const {
     data: chat,
@@ -38,6 +41,12 @@ const UserChat = () => {
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
+    if (chat) {
+      dispatch(setSelectedChat(chat.chat));
+    }
+  }, [chat, dispatch]);
+
+  useEffect(() => {
     if (page === 1 && messages) {
       setShowingMessages([...messages!.chatMessages].reverse());
     }
@@ -54,6 +63,14 @@ const UserChat = () => {
   }, [showingMessages, page]);
 
   // SOCKET
+  useEffect(() => {
+    if (socket && connected) {
+      if (chat) {
+        socket.emit("joinChat", chat.chat._id);
+      }
+    }
+    return () => {};
+  }, [connected, socket, chat]);
 
   useEffect(() => {
     if (socket && connected) {
@@ -61,6 +78,10 @@ const UserChat = () => {
         // TODO: Operator joined your chat message
         socket.emit("leaveQueue");
         refetchChat();
+      });
+
+      socket.on("messageFromServer", (message: MessageType) => {
+        console.log(message);
       });
 
       socket.on("closeChat", () => {
@@ -121,33 +142,10 @@ const UserChat = () => {
           )}
           <div ref={messagesEndRef} />
         </ul>
+        {/* ////////////////////////////////// */}
 
         {chat?.chat.isActive ? (
-          <div className=" border-t border-gray-700 bg-gray-800 p-3">
-            <form className="flex gap-2">
-              <input
-                type="text"
-                placeholder="Type your message..."
-                className="flex-1 bg-gray-700 text-white rounded-full py-2 px-4 outline-none focus:ring-2 focus:ring-sky-500"
-              />
-              <button
-                type="submit"
-                className="bg-sky-600 hover:bg-sky-700 text-white rounded-full p-2 transition-colors duration-200"
-                aria-label="Send message"
-              >
-                <IoSend size={20} />
-              </button>
-            </form>
-            <div className="flex justify-between mt-2 text-xs text-gray-400">
-              <button
-                type="button"
-                className="hover:text-sky-400 transition-colors"
-              >
-                Attach Image
-              </button>
-              <span>Press Enter to send</span>
-            </div>
-          </div>
+          <ChatInput socket={socket} />
         ) : (
           chat?.chat && (
             <div className="border-t border-gray-700 bg-gray-800 p-3 flex items-center justify-between ">

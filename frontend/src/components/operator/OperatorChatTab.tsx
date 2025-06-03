@@ -12,7 +12,6 @@ import {
 import Loader from "../Loader";
 import Message from "../Chat/Message";
 import { BsThreeDots } from "react-icons/bs";
-import { IoSend } from "react-icons/io5";
 import { isApiError } from "../../utils/isApiError";
 import { toast } from "react-toastify";
 import { clearSelectedChat } from "../../redux/features/chatSlice";
@@ -20,6 +19,7 @@ import { useNavigate } from "react-router-dom";
 import Modal from "../Modal";
 import DeleteChatForm from "../Forms/DeleteChatForm";
 import type { Socket } from "socket.io-client";
+import ChatInput from "../Chat/ChatInput";
 
 type ChatTabProps = {
   setChatSidebarOpen: (bool: boolean) => void;
@@ -145,6 +145,15 @@ const OperatorChatTab = ({
     setMessagesPage(1);
   }, [selectedChat]);
 
+  //socket
+  useEffect(() => {
+    if (socket) {
+      socket.on("messageFromServer", (message: MessageType) => {
+        console.log(message);
+      });
+    }
+  }, [socket]);
+
   return (
     <div className="not-md:col-span-2 flex flex-col ">
       <h2 className="flex items-center font-semibold justify-center p-2 text-xl gap-2 text-sky-700 border-b border-gray-700 relative">
@@ -236,33 +245,11 @@ const OperatorChatTab = ({
           ))}
         <div ref={messagesEndRef} />
       </ul>
+      {/* ///////////////////////////////////// */}
+
       {/* _send message input */}
       {selectedChat && !messagesLoading && selectedChat.isActive ? (
-        <div className=" border-t border-gray-700 bg-gray-800 p-3">
-          <form className="flex gap-2">
-            <input
-              type="text"
-              placeholder="Type your message..."
-              className="flex-1 bg-gray-700 text-white rounded-full py-2 px-4 outline-none focus:ring-2 focus:ring-sky-500"
-            />
-            <button
-              type="submit"
-              className="bg-sky-600 hover:bg-sky-700 text-white rounded-full p-2 transition-colors duration-200"
-              aria-label="Send message"
-            >
-              <IoSend size={20} />
-            </button>
-          </form>
-          <div className="flex justify-between mt-2 text-xs text-gray-400">
-            <button
-              type="button"
-              className="hover:text-sky-400 transition-colors"
-            >
-              Attach Image
-            </button>
-            <span>Press Enter to send</span>
-          </div>
-        </div>
+        <ChatInput socket={socket} />
       ) : (
         selectedChat && (
           <div className="border-t border-gray-700 bg-gray-800 p-3 flex items-center justify-between ">

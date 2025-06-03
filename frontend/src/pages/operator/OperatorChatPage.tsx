@@ -148,15 +148,18 @@ const OperatorChat = () => {
         </div>
         {/* CHAT LIST */}
         <ul>
+          {/* join socket room on joining chat */}
           {chatsLoading && <Loader />}
           {showingChats.map((chat) => (
             <ChatEl
               key={chat._id}
               chat={chat}
               setChatSidebarOpen={setChatSidebarOpen}
+              socket={socket}
             />
           ))}
 
+          {/* join socket room on creating chat */}
           {selectedChats === "queue" &&
             queueUsers.map((user) => (
               <li
