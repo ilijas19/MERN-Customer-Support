@@ -36,7 +36,7 @@ cloudinary.config({
 
 app.use(
   cors({
-    origin: ["http://localhost:5173"],
+    origin: ["frontend-origin.ur", "http://localhost:5173"],
     methods: ["GET", "POST", "PATCH", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
@@ -49,6 +49,14 @@ app.use("/api/v1/chat", chatRouter);
 app.use("/api/v1/admin", adminRouter);
 app.use("/api/v1/upload", uploadRouter);
 app.use("/api/v1/user", userRouter);
+
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static(path.join(__dirname, "/frontend/dist")));
+
+  app.get("*", (req, res) => {
+    res.sendFile(path.resolve(__dirname, "frontend", "dist", "index.html"));
+  });
+}
 
 app.use(notFound);
 app.use(errorHandler);
