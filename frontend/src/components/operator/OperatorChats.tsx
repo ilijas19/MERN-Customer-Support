@@ -22,9 +22,16 @@ const OperatorChats = ({ operatorId }: Props) => {
           <div>
             <h3 className="font-semibold text-sky-600">{chat.user.fullName}</h3>
             <p className="text-sm text-gray-400">
-              {chat.lastMessage && chat.lastMessage.sender.fullName} :{" "}
-              {chat.lastMessage && chat.lastMessage.text}
-              {!chat.lastMessage && "No Messages"}
+              {chat.lastMessage ? (
+                <>
+                  {chat.lastMessage.sender.fullName}:{" "}
+                  {chat.lastMessage.type === "image"
+                    ? "Image"
+                    : chat.lastMessage.text}
+                </>
+              ) : (
+                "No Messages"
+              )}
             </p>
           </div>
           <p

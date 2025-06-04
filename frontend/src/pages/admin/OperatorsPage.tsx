@@ -87,6 +87,7 @@ const OperatorsPage = () => {
           <tbody>
             {operators?.users.map((user) => (
               <tr
+                key={user._id}
                 onClick={() => navigate(`/profile/${user._id}`)}
                 className="border-b border-gray-700 hover:bg-gray-800 transition-all duration-300 cursor-pointer"
               >

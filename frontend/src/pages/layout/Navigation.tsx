@@ -135,7 +135,7 @@ const Navigation = () => {
           {/* profile div */}
           <div className="mt-auto flex items-center gap-3 bg-gray-800 px-3 py-2 rounded-xl relative">
             <img
-              src="s"
+              src={currentUser.profilePicture}
               alt="User"
               className="h-10 w-10 rounded-full object-cover bg-gray-600"
             />

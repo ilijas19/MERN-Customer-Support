@@ -15,7 +15,7 @@ const Modal = ({ isModalOpen, onClose, children }: ModalProps) => {
       >
         <div
           onClick={(e) => e.stopPropagation()}
-          className="bg-gray-800 rounded-lg h-fit max-w-[700px] sm:mt-12 w-full not-sm:h-full p-4 px-6"
+          className="bg-gray-800 rounded-lg h-fit max-w-[700px] max-h-[700px]  sm:mt-12 w-full not-sm:h-full p-4 px-6"
         >
           {children}
         </div>

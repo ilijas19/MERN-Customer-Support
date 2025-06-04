@@ -3,6 +3,9 @@ import { IoSend } from "react-icons/io5";
 import { useSelector } from "react-redux";
 import type { Socket } from "socket.io-client";
 import type { RootState } from "../../redux/store";
+import { isApiError } from "../../utils/isApiError";
+import { toast } from "react-toastify";
+import { useUploadImageMutation } from "../../redux/api/uploadApiSlice";
 
 type InputProps = {
   socket: Socket;
@@ -11,7 +14,11 @@ const ChatInput = ({ socket }: InputProps) => {
   const { currentUser } = useSelector((state: RootState) => state.auth);
   const { selectedChat } = useSelector((state: RootState) => state.chat);
 
-  const [inputValue, setInputValue] = useState("");
+  const [inputValue, setInputValue] = useState<string>("");
+  const [inputImgUrl, setInputImgUrl] = useState<string>("");
+
+  const [uploadApiHandler, { isLoading: uploadLoading }] =
+    useUploadImageMutation();
 
   const handleMessageSend = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -19,8 +26,27 @@ const ChatInput = ({ socket }: InputProps) => {
       text: inputValue,
       from: currentUser,
       chatId: selectedChat?._id,
+      imageUrl: inputImgUrl,
     });
     setInputValue("");
+    setInputImgUrl("");
+  };
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    try {
+      if (e.target.files && e.target.files.length > 0) {
+        const formData = new FormData();
+        formData.append("image", e.target.files[0]);
+        const res = await uploadApiHandler(formData).unwrap();
+        setInputImgUrl(res.url);
+      }
+    } catch (error) {
+      if (isApiError(error)) {
+        toast.error(error.data.msg);
+      } else {
+        toast.error("Something Went Wrong");
+      }
+    }
   };
 
   return (
@@ -42,9 +68,22 @@ const ChatInput = ({ socket }: InputProps) => {
         </button>
       </form>
       <div className="flex justify-between mt-2 text-xs text-gray-400">
-        <button type="button" className="hover:text-sky-400 transition-colors">
-          Attach Image
-        </button>
+        <div>
+          <label className="cursor-pointer hover:text-sky-600" htmlFor="image">
+            {uploadLoading
+              ? "Uploading..."
+              : inputImgUrl
+              ? "Image Uploaded"
+              : "Upload Image"}
+          </label>
+          <input
+            disabled={uploadLoading}
+            id="image"
+            type="file"
+            hidden
+            onChange={handleImageUpload}
+          />
+        </div>
         <span>Press Enter to send</span>
       </div>
     </div>

@@ -25,7 +25,11 @@ const ChatEl = ({ chat, setChatSidebarOpen, socket }: ChatElProps) => {
       <div>
         <p className="font-semibold">{chat.user.fullName}</p>
         <p className="text-sm text-gray-400">
-          {chat.lastMessage ? chat.lastMessage.text : "No Messages Yet"}
+          {chat.lastMessage
+            ? chat.lastMessage.type === "message"
+              ? chat.lastMessage.text || "No messages Yet"
+              : "Image"
+            : "No messages Yet"}
         </p>
       </div>
       <p className="self-center ml-auto text-xs text-gray-500">

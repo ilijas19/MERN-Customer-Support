@@ -15,7 +15,7 @@ const DeleteChatForm = ({
       <p className="text-center text-gray-300 mt-3">
         Are you sure that you want to{" "}
         <span className="text-red-600">DELETE</span>
-        this chat? This action is irreversible !
+        {""} this chat? This action is irreversible !
       </p>
       <div className="flex justify-center mt-5 gap-3">
         <button

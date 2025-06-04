@@ -4,9 +4,16 @@ import { formatTime } from "../../utils/formatTime";
 type MessageProps = {
   message: MessageType;
   currentUserId: string;
+  setPreviewModalOpen: (bol: boolean) => void;
+  setSelectedImgUrl: (str: string) => void;
 };
 
-const Message = ({ message, currentUserId }: MessageProps) => {
+const Message = ({
+  message,
+  currentUserId,
+  setPreviewModalOpen,
+  setSelectedImgUrl,
+}: MessageProps) => {
   const isCurrentUser = message.sender._id === currentUserId;
 
   if (message.type === "message") {
@@ -33,7 +40,27 @@ const Message = ({ message, currentUserId }: MessageProps) => {
     );
   }
   if (message.type === "image") {
-    return <li>image</li>;
+    return (
+      <li
+        className={`sm:w-[60%] w-[70%] cursor-pointer ${
+          isCurrentUser ? "self-end   " : "self-start "
+        }`}
+      >
+        <img
+          onClick={() => {
+            setPreviewModalOpen(true);
+            setSelectedImgUrl(message.imageUrl ?? "");
+          }}
+          src={message.imageUrl}
+          alt=""
+          className="object-contain rounded-lg shadow-xl w-full  max-h-[300px]"
+        />
+        <p className="text-gray-100 not-sm:text-sm mb-1  ">{message.text}</p>
+        <p className="text-xs self-end text-gray-400">
+          {formatTime(message.createdAt)}
+        </p>
+      </li>
+    );
   }
 };
 

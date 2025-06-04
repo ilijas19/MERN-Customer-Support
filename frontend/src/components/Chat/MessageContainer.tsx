@@ -5,6 +5,8 @@ import type { getChatMessagesRes, Message as MessageType } from "../../types";
 import Message from "./Message";
 import { useEffect, useRef, useState } from "react";
 import type { Socket } from "socket.io-client";
+import Modal from "../Modal";
+import ImagePreview from "../ImagePreview";
 
 type MessageContainerProps = {
   chatMessages: getChatMessagesRes | undefined;
@@ -25,6 +27,8 @@ const MessageContainer = ({
   const { currentUser } = useSelector((state: RootState) => state.auth);
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
   const [showingMessages, setShowingMessages] = useState<MessageType[]>([]);
+  const [isPreviewModalOpen, setPreviewModalOpen] = useState<boolean>(false);
+  const [selectedImgUrl, setSelectedImgUrl] = useState<string>("");
 
   // Reset messages when chat changes
   useEffect(() => {
@@ -97,10 +101,21 @@ const MessageContainer = ({
             message={message}
             key={message._id}
             currentUserId={currentUser!.userId}
+            setPreviewModalOpen={setPreviewModalOpen}
+            setSelectedImgUrl={setSelectedImgUrl}
           />
         ))}
 
       <div ref={messagesEndRef} />
+      <Modal
+        isModalOpen={isPreviewModalOpen}
+        onClose={() => setPreviewModalOpen(false)}
+      >
+        <ImagePreview
+          onClose={() => setPreviewModalOpen(false)}
+          selectedImgUrl={selectedImgUrl}
+        />
+      </Modal>
     </ul>
   );
 };
