@@ -179,6 +179,6 @@ export const getMyChatMessages = async (req, res) => {
     page: +page,
     hasNextPage,
     nbHits: chatMessages.length,
-    chatMessages,
+    messages: chatMessages,
   });
 };

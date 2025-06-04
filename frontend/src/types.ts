@@ -128,7 +128,7 @@ export type getMyMessagesRes = {
   page: number;
   hasNextPage: boolean;
   nbHits: number;
-  chatMessages: Message[];
+  messages: Message[];
 };
 
 export type getMyMessagesArg = {

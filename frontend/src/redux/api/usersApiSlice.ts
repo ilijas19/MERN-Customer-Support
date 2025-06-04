@@ -1,11 +1,11 @@
-import type {
-  getMyMessagesArg,
-  getMyMessagesRes,
-  MessageRes,
-  UpdatePasswordArgs,
-  UpdateProfileArgs,
-  User,
-  UserChatRes,
+import {
+  type getChatMessagesRes,
+  type getMyMessagesArg,
+  type MessageRes,
+  type UpdatePasswordArgs,
+  type UpdateProfileArgs,
+  type User,
+  type UserChatRes,
 } from "../../types";
 import { USER_URL } from "../constants";
 import { apiSlice } from "./apiSlice";
@@ -43,7 +43,7 @@ const usersApiSlice = apiSlice.injectEndpoints({
         url: `${USER_URL}/myChat?page=${page}`,
       }),
     }),
-    getMyMessages: builder.query<getMyMessagesRes, getMyMessagesArg>({
+    getMyMessages: builder.query<getChatMessagesRes, getMyMessagesArg>({
       query: ({ page = 1, chatId }) => ({
         url: `${USER_URL}/myMessages/${chatId}?page=${page}`,
       }),

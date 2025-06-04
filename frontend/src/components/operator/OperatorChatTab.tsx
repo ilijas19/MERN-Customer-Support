@@ -2,7 +2,6 @@ import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "../../redux/store";
 import { RiMenuFold4Line } from "react-icons/ri";
 import { useEffect, useState } from "react";
-import type { Message as MessageType } from "../../types";
 import {
   useCloseChatMutation,
   useDeleteChatMutation,
@@ -56,6 +55,9 @@ const OperatorChatTab = ({
   const [openChatApiHandler, { isLoading: openChatLoading }] =
     useOpenChatMutation();
 
+  const [deleteChatApiHandler, { isLoading: deleteChatLoading }] =
+    useDeleteChatMutation();
+
   const handleCloseChat = async () => {
     try {
       const res = await closeChatApiHandler(selectedChat!._id ?? "").unwrap();
@@ -72,9 +74,6 @@ const OperatorChatTab = ({
       }
     }
   };
-
-  const [deleteChatApiHandler, { isLoading: deleteChatLoading }] =
-    useDeleteChatMutation();
 
   const handleDeleteChat = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -122,13 +121,6 @@ const OperatorChatTab = ({
   }, [selectedChat]);
 
   //socket
-  useEffect(() => {
-    if (socket) {
-      socket.on("messageFromServer", (message: MessageType) => {
-        console.log(message);
-      });
-    }
-  }, [socket]);
 
   return (
     <div className="not-md:col-span-2 flex flex-col border-r border-gray-700">
@@ -191,6 +183,7 @@ const OperatorChatTab = ({
         messagesLoading={messagesLoading}
         messagesPage={messagesPage}
         setMessagesPage={setMessagesPage}
+        socket={socket}
       />
       {/* ///////////////////////////////////// */}
 

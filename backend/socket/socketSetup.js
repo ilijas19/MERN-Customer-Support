@@ -5,6 +5,7 @@ import {
   getNextInQueue,
   getQueue,
 } from "./queue.js";
+import { createMessage } from "../controllers/messageController.js";
 
 const socketSetup = (io, socket) => {
   socket.on("joined", (currentUser) => {
@@ -21,7 +22,6 @@ const socketSetup = (io, socket) => {
   });
 
   socket.on("startChat", (socketId) => {
-    console.log(socketId);
     io.to(socketId).emit("operatorJoined");
   });
 
@@ -32,10 +32,9 @@ const socketSetup = (io, socket) => {
       }
     }
     socket.join(chatId);
-    console.log(`Socket ${socket.id} joined room ${chatId}`);
   });
 
-  socket.on("messageFromClient", (data) => {
+  socket.on("messageFromClient", async (data) => {
     const message = {
       _id: Math.random().toString(),
       chat: data.chatId,
@@ -50,6 +49,14 @@ const socketSetup = (io, socket) => {
       imageUrl: data.imageUrl || undefined,
       createdAt: new Date(),
     };
+
+    await createMessage({
+      chatId: data.chatId,
+      userId: data.from.userId,
+      type: data.imageUrl ? "image" : "message",
+      text: data.text,
+      imageUrl: data.imageUrl,
+    });
 
     io.to(data.chatId).emit("messageFromServer", message);
   });

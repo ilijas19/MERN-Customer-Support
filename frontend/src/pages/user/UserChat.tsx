@@ -4,19 +4,15 @@ import {
 } from "../../redux/api/usersApiSlice";
 import Loader from "../../components/Loader";
 import { isApiError } from "../../utils/isApiError";
-import { useEffect, useState, useRef } from "react";
-import Message from "../../components/Chat/Message";
-import { useDispatch, useSelector } from "react-redux";
-import type { RootState } from "../../redux/store";
-import type { Message as MessageType } from "../../types";
+import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 import QueueSection from "../../components/User/QueueSection";
 import useSocket from "../../hooks/useSocket";
 import ChatInput from "../../components/Chat/ChatInput";
 import { setSelectedChat } from "../../redux/features/chatSlice";
+import MessageContainer from "../../components/Chat/MessageContainer";
 
 const UserChat = () => {
-  const { currentUser } = useSelector((state: RootState) => state.auth);
-  const [showingMessages, setShowingMessages] = useState<MessageType[]>([]);
   const [page, setPage] = useState(1);
   const { socket, connected } = useSocket();
 
@@ -27,7 +23,6 @@ const UserChat = () => {
     // isLoading: myChatLoading,
     error,
     refetch: refetchChat,
-    isFetching,
   } = useGetMyChatQuery({ page: 1 });
 
   const { data: messages, isLoading: messagesLoading } = useGetMyMessagesQuery(
@@ -38,29 +33,11 @@ const UserChat = () => {
     { skip: !chat }
   );
 
-  const messagesEndRef = useRef<HTMLDivElement | null>(null);
-
   useEffect(() => {
     if (chat) {
       dispatch(setSelectedChat(chat.chat));
     }
   }, [chat, dispatch]);
-
-  useEffect(() => {
-    if (page === 1 && messages) {
-      setShowingMessages([...messages!.chatMessages].reverse());
-    }
-    if (page > 1 && messages) {
-      const newMessages = [...messages.chatMessages].reverse();
-      setShowingMessages((prev) => [...newMessages, ...prev]);
-    }
-  }, [messages, page]);
-
-  useEffect(() => {
-    if (page === 1) {
-      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-    }
-  }, [showingMessages, page]);
 
   // SOCKET
   useEffect(() => {
@@ -80,9 +57,9 @@ const UserChat = () => {
         refetchChat();
       });
 
-      socket.on("messageFromServer", (message: MessageType) => {
-        console.log(message);
-      });
+      // socket.on("messageFromServer", (message: MessageType) => {
+      //   console.log(message);
+      // });
 
       socket.on("closeChat", () => {
         alert("Operator closed your chat");
@@ -110,38 +87,13 @@ const UserChat = () => {
         </h2>
 
         {/* Messages container */}
-        <ul className="overflow-y-auto flex flex-col gap-4 p-4 h-[calc(100vh-11.2rem)] custom-scrollbar">
-          {/* Load older messages button */}
-          {messages?.hasNextPage && (
-            <button
-              onClick={() => setPage(page + 1)}
-              disabled={isFetching}
-              className="bg-gray-700 w-fit self-center px-3 py-1 rounded-lg cursor-pointer hover:bg-gray-600 transition-all duration-300 disabled:opacity-50"
-            >
-              {isFetching ? "Loading..." : "Load older messages"}
-            </button>
-          )}
-
-          {/* Messages list */}
-          {showingMessages.map((message) => (
-            <Message
-              message={message}
-              key={message._id}
-              currentUserId={currentUser!.userId}
-            />
-          ))}
-
-          {showingMessages.length === 0 && !isFetching && (
-            <h2 className="text-center text-gray-500">No messages yet</h2>
-          )}
-
-          {isFetching && page === 1 && (
-            <div className="flex justify-center">
-              <Loader />
-            </div>
-          )}
-          <div ref={messagesEndRef} />
-        </ul>
+        <MessageContainer
+          chatMessages={messages}
+          messagesLoading={messagesLoading}
+          messagesPage={page}
+          setMessagesPage={setPage}
+          socket={socket}
+        />
         {/* ////////////////////////////////// */}
 
         {chat?.chat.isActive ? (
