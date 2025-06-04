@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "../../redux/store";
 import { RiMenuFold4Line } from "react-icons/ri";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import type { Message as MessageType } from "../../types";
 import {
   useCloseChatMutation,
@@ -9,8 +9,6 @@ import {
   useGetChatMessagesQuery,
   useOpenChatMutation,
 } from "../../redux/api/operatorApiSlice";
-import Loader from "../Loader";
-import Message from "../Chat/Message";
 import { BsThreeDots } from "react-icons/bs";
 import { isApiError } from "../../utils/isApiError";
 import { toast } from "react-toastify";
@@ -20,6 +18,7 @@ import Modal from "../Modal";
 import DeleteChatForm from "../Forms/DeleteChatForm";
 import type { Socket } from "socket.io-client";
 import ChatInput from "../Chat/ChatInput";
+import MessageContainer from "../Chat/MessageContainer";
 
 type ChatTabProps = {
   setChatSidebarOpen: (bool: boolean) => void;
@@ -34,7 +33,6 @@ const OperatorChatTab = ({
   selectedChats,
   socket,
 }: ChatTabProps) => {
-  const { currentUser } = useSelector((state: RootState) => state.auth);
   const { selectedChat } = useSelector((state: RootState) => state.chat);
 
   const dispatch = useDispatch();
@@ -42,20 +40,14 @@ const OperatorChatTab = ({
 
   const [messagesPage, setMessagesPage] = useState(1);
   const [isChatDropdownOpen, setChatDropdownOpen] = useState(false);
-  const [showingMessages, setShowingMessages] = useState<MessageType[]>([]);
   const [isDeleteChatModalOpen, setDeleteChatModalOpen] = useState(false);
 
-  const messagesEndRef = useRef<HTMLDivElement | null>(null);
-
   //__messages
-  const {
-    data: chatMessages,
-    isLoading: messagesLoading,
-    isFetching,
-  } = useGetChatMessagesQuery(
-    { chatId: selectedChat?._id ?? "", page: messagesPage },
-    { skip: !selectedChat }
-  );
+  const { data: chatMessages, isLoading: messagesLoading } =
+    useGetChatMessagesQuery(
+      { chatId: selectedChat?._id ?? "", page: messagesPage },
+      { skip: !selectedChat }
+    );
 
   /// __open & close selectec chat functionality
   const [closeChatApiHandler, { isLoading: closeChatLoading }] =
@@ -124,22 +116,6 @@ const OperatorChatTab = ({
   };
 
   //_effects
-  useEffect(() => {
-    if (messagesPage === 1 && chatMessages) {
-      setShowingMessages([]);
-      setShowingMessages([...chatMessages.messages].reverse());
-    }
-    if (messagesPage > 1 && chatMessages) {
-      const newMessages = [...chatMessages.messages].reverse();
-      setShowingMessages((prev) => [...newMessages, ...prev]);
-    }
-  }, [chatMessages, messagesPage]);
-
-  useEffect(() => {
-    if (messagesPage === 1) {
-      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-    }
-  }, [showingMessages, messagesPage]);
 
   useEffect(() => {
     setMessagesPage(1);
@@ -155,7 +131,7 @@ const OperatorChatTab = ({
   }, [socket]);
 
   return (
-    <div className="not-md:col-span-2 flex flex-col ">
+    <div className="not-md:col-span-2 flex flex-col border-r border-gray-700">
       <h2 className="flex items-center font-semibold justify-center p-2 text-xl gap-2 text-sky-700 border-b border-gray-700 relative">
         <RiMenuFold4Line
           size={24}
@@ -210,41 +186,12 @@ const OperatorChatTab = ({
         )}
       </h2>
       {/* _messages */}
-      <ul className="overflow-y-auto flex flex-col gap-4 p-4 h-[calc(100vh-11.2rem)] custom-scrollbar">
-        {/* no  selecte chat */}
-        {!selectedChat && (
-          <h2 className="text-center text-gray-500">
-            Start or Join an Existing Chat!
-          </h2>
-        )}
-
-        {messagesLoading && <Loader />}
-
-        {/* no messages */}
-        {selectedChat && chatMessages && chatMessages.messages.length === 0 && (
-          <h2 className="text-center text-gray-500">No messages yet</h2>
-        )}
-        {/* Load older messages button */}
-        {chatMessages?.hasNextPage && selectedChat && (
-          <button
-            onClick={() => setMessagesPage(messagesPage + 1)}
-            disabled={isFetching}
-            className="bg-gray-700 w-fit self-center px-3 py-1 rounded-lg cursor-pointer hover:bg-gray-600 transition-all duration-300 disabled:opacity-50"
-          >
-            {isFetching ? "Loading..." : "Load older messages"}
-          </button>
-        )}
-        {selectedChat &&
-          !messagesLoading &&
-          showingMessages.map((message) => (
-            <Message
-              message={message}
-              key={message._id}
-              currentUserId={currentUser!.userId}
-            />
-          ))}
-        <div ref={messagesEndRef} />
-      </ul>
+      <MessageContainer
+        chatMessages={chatMessages}
+        messagesLoading={messagesLoading}
+        messagesPage={messagesPage}
+        setMessagesPage={setMessagesPage}
+      />
       {/* ///////////////////////////////////// */}
 
       {/* _send message input */}
