@@ -25,6 +25,6 @@ router.post("/close/:id", closeChat);
 router.post("/open/:id", openChat);
 router.get("/messages/:id", getChatMessages);
 
-router.route("/:id").delete(deleteChat).get(getSingleChat);
+router.route("test/:id").delete(deleteChat).get(getSingleChat);
 
 export default router;
