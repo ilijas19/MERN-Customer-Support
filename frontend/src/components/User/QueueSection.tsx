@@ -50,7 +50,7 @@ const QueueSection = ({ error, socket, connected }: QueueProps) => {
         {error.data.msg === "You Have No Active Conversation" && (
           <>
             {inQueue ? (
-              <h2 className="text-green-600 mt-3">
+              <h2 className="text-green-600 mt-3 not-sm:text-sm px-1 text-center">
                 Queue Joined, Operator Will Open Your Chat as Soon it's Possible
               </h2>
             ) : (

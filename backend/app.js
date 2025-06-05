@@ -38,7 +38,10 @@ cloudinary.config({
 
 app.use(
   cors({
-    origin: ["frontend-origin.ur", "http://localhost:5173"],
+    origin: [
+      "https://mern-customer-support.onrender.com",
+      "http://localhost:5173",
+    ],
     methods: ["GET", "POST", "PATCH", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
@@ -46,7 +49,10 @@ app.use(
 );
 const io = new Server(server, {
   cors: {
-    origin: ["frontend-origin.ur", "http://localhost:5173"],
+    origin: [
+      "https://mern-customer-support.onrender.com",
+      "http://localhost:5173",
+    ],
     methods: ["GET", "POST", "PATCH", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
