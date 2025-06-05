@@ -7,6 +7,7 @@ import fileUpload from "express-fileupload";
 import { Server } from "socket.io";
 import http from "http";
 import cors from "cors";
+import path from "path";
 //db
 import connectDb from "./db/connectDb.js";
 //middleware
@@ -23,6 +24,7 @@ import socketSetup from "./socket/socketSetup.js";
 
 const app = express();
 const server = http.createServer(app);
+const __dirname = path.resolve();
 
 app.use(express.json());
 app.use(cookieParser(process.env.JWT_SECRET));
