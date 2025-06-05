@@ -64,9 +64,6 @@ app.use("/api/v1/admin", adminRouter);
 app.use("/api/v1/upload", uploadRouter);
 app.use("/api/v1/user", userRouter);
 
-app.use(notFound);
-app.use(errorHandler);
-
 if (process.env.NODE_ENV === "production") {
   app.use(express.static(path.join(__dirname, "/frontend/dist")));
 
@@ -74,6 +71,9 @@ if (process.env.NODE_ENV === "production") {
     res.sendFile(path.resolve(__dirname, "frontend", "dist", "index.html"));
   });
 }
+
+app.use(notFound);
+app.use(errorHandler);
 
 const port = process.env.PORT || 4999;
 const init = async () => {
