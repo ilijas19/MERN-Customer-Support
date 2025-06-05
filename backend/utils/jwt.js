@@ -24,7 +24,6 @@ export const attachCookiesToResponse = ({ res, user, refreshToken }) => {
     secure: process.env.NODE_ENV === "production",
     maxAge: oneHour,
     sameSite: "Strict",
-    path: "/",
   });
 
   res.cookie("refreshToken", refreshTokenJwt, {
@@ -33,6 +32,5 @@ export const attachCookiesToResponse = ({ res, user, refreshToken }) => {
     secure: process.env.NODE_ENV === "production",
     maxAge: oneWeek,
     sameSite: "Strict",
-    path: "/",
   });
 };
