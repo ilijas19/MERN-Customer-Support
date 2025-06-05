@@ -44,25 +44,6 @@ app.use(
     credentials: true,
   })
 );
-
-//routes
-app.use("/api/v1/auth", authRouter);
-app.use("/api/v1/chat", chatRouter);
-app.use("/api/v1/admin", adminRouter);
-app.use("/api/v1/upload", uploadRouter);
-app.use("/api/v1/user", userRouter);
-
-if (process.env.NODE_ENV === "production") {
-  app.use(express.static(path.join(__dirname, "/frontend/dist")));
-
-  app.get("/:path(*)", (req, res) => {
-    res.sendFile(path.resolve(__dirname, "frontend", "dist", "index.html"));
-  });
-}
-
-app.use(notFound);
-app.use(errorHandler);
-
 const io = new Server(server, {
   cors: {
     origin: ["frontend-origin.ur", "http://localhost:5173"],
@@ -75,6 +56,24 @@ const io = new Server(server, {
 io.on("connection", (socket) => {
   socketSetup(io, socket);
 });
+
+//routes
+app.use("/api/v1/auth", authRouter);
+app.use("/api/v1/chat", chatRouter);
+app.use("/api/v1/admin", adminRouter);
+app.use("/api/v1/upload", uploadRouter);
+app.use("/api/v1/user", userRouter);
+
+app.use(notFound);
+app.use(errorHandler);
+
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static(path.join(__dirname, "/frontend/dist")));
+
+  app.get("*", (req, res) => {
+    res.sendFile(path.resolve(__dirname, "frontend", "dist", "index.html"));
+  });
+}
 
 const port = process.env.PORT || 4999;
 const init = async () => {
