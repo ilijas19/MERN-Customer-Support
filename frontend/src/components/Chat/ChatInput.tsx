@@ -50,7 +50,7 @@ const ChatInput = ({ socket }: InputProps) => {
   };
 
   return (
-    <div className=" border-t border-gray-700 bg-gray-800 p-3">
+    <div className=" border-t border-gray-700 bg-gray-800 p-3 ">
       <form className="flex gap-2" onSubmit={handleMessageSend}>
         <input
           value={inputValue}

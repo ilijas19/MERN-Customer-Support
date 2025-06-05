@@ -5,12 +5,13 @@ import Navigation from "./pages/layout/Navigation";
 const App = () => {
   return (
     <div className="bg-gradient-to-b from-gray-800 to-gray-900 min-h-screen text-white flex flex-col">
-      <Navigation />
-      <div className="flex-1 flex w-full">
+      <div className="flex flex-col w-full overflow-hidden  h-screen ">
+        <Navigation />
         <ToastContainer />
         <Outlet />
       </div>
     </div>
   );
 };
+
 export default App;

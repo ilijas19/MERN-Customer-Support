@@ -101,7 +101,7 @@ const OperatorChat = () => {
   }, [queueUsers]);
 
   return (
-    <section className="max-w-[1200px] grid grid-cols-[1.6fr_3fr] mx-auto relative w-full ">
+    <section className="max-w-[1200px] grid grid-cols-[1.6fr_3fr] mx-auto relative w-full h-full ">
       {/* MENU */}
       <div
         className={`bg-gray-800 shadow-xl sm:border-r sm:border-gray-700 not-md:fixed top-0 left-0 h-full md:w-full sm:w-[65%] w-[80%] z-40

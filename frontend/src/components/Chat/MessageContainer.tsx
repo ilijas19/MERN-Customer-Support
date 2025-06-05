@@ -76,7 +76,7 @@ const MessageContainer = ({
   }, [socket]);
 
   return (
-    <ul className="overflow-y-auto flex flex-col gap-4 p-4 h-[calc(100vh-11.2rem)] custom-scrollbar">
+    <ul className="overflow-y-auto flex flex-col gap-4 p-4 custom-scrollbar ">
       {!selectedChat && (
         <h2 className="text-center text-gray-500">
           Start or Join an Existing Chat!
