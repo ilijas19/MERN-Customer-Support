@@ -79,24 +79,21 @@ const UserChat = () => {
 
   // CHAT SECTION
   return (
-    <section className="w-full max-w-[900px] mx-auto grow flex flex-col h-screen ">
+    <section className="w-full max-w-[900px] mx-auto">
       {/* CHAT */}
-      <div className="w-full border-x border-gray-700 h-full flex flex-col ">
+      <div className="w-full border-x border-gray-700">
         <h2 className="flex items-center font-semibold justify-center p-2 text-xl gap-2 text-sky-700 border-b border-gray-700 relative">
           Operator Chat
         </h2>
 
         {/* Messages container */}
-        <div className="grow overflow-hidden">
-          <MessageContainer
-            chatMessages={messages}
-            messagesLoading={messagesLoading}
-            messagesPage={page}
-            setMessagesPage={setPage}
-            socket={socket}
-          />
-        </div>
-
+        <MessageContainer
+          chatMessages={messages}
+          messagesLoading={messagesLoading}
+          messagesPage={page}
+          setMessagesPage={setPage}
+          socket={socket}
+        />
         {/* ////////////////////////////////// */}
 
         {chat?.chat.isActive ? (

@@ -123,7 +123,7 @@ const OperatorChatTab = ({
   //socket
 
   return (
-    <div className="not-md:col-span-2 flex flex-col border-r border-gray-700 ">
+    <div className="not-md:col-span-2 flex flex-col border-r border-gray-700">
       <h2 className="flex items-center font-semibold justify-center p-2 text-xl gap-2 text-sky-700 border-b border-gray-700 relative">
         <RiMenuFold4Line
           size={24}
@@ -178,16 +178,13 @@ const OperatorChatTab = ({
         )}
       </h2>
       {/* _messages */}
-      <div className="grow overflow-hidden">
-        <MessageContainer
-          chatMessages={chatMessages}
-          messagesLoading={messagesLoading}
-          messagesPage={messagesPage}
-          setMessagesPage={setMessagesPage}
-          socket={socket}
-        />
-      </div>
-
+      <MessageContainer
+        chatMessages={chatMessages}
+        messagesLoading={messagesLoading}
+        messagesPage={messagesPage}
+        setMessagesPage={setMessagesPage}
+        socket={socket}
+      />
       {/* ///////////////////////////////////// */}
 
       {/* _send message input */}
