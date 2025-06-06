@@ -32,7 +32,6 @@ const Login = () => {
 
       navigate("/");
       dispatch(setCurrentUser(res.currentUser));
-      toast.success(res.msg);
     } catch (error) {
       if (isApiError(error)) {
         toast.error(error.data.msg);

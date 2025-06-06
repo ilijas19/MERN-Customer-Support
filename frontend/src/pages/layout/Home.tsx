@@ -18,11 +18,12 @@ const Home = () => {
     if (!currentUser) {
       navigate("/login", { replace: true });
     }
-  }, [currentUser]);
+  }, [currentUser, navigate]);
+
   return (
-    <section className="max-w-[900px] mx-auto">
+    <section className="max-w-[1000px] mx-auto h-full w-full">
       <h2 className="text-2xl m-4 mb-5">Welcome, {currentUser?.fullName}</h2>
-      <div className="text-white flex flex-wrap justify-around px-6  gap-4">
+      <div className="text-white flex flex-wrap justify-around px-6 gap-4 not-sm:gap-8">
         <DashBox
           currentUserRole={currentUser?.role}
           allowedRoles={["operator"]}

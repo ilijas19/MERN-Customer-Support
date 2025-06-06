@@ -52,10 +52,10 @@ const MessageContainer = ({
   }, [chatMessages, messagesPage]);
 
   useEffect(() => {
-    if (messagesPage === 1) {
+    if (selectedChat && messagesPage === 1) {
       messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
     }
-  }, [showingMessages, messagesPage]);
+  }, [showingMessages, messagesPage, selectedChat]);
 
   useEffect(() => {
     if (!socket) return;

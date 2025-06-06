@@ -27,8 +27,7 @@ const Register = () => {
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      const res = await registerApiHandler(formProps).unwrap();
-      toast.success(res.msg);
+      await registerApiHandler(formProps).unwrap();
       navigate("/login");
     } catch (error) {
       if (isApiError(error)) {

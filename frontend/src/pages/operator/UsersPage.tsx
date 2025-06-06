@@ -86,7 +86,7 @@ const UsersPage = () => {
                 onClick={() => navigate(`/profile/${user._id}`)}
                 className="border-b border-gray-700 hover:bg-gray-800 transition-all duration-300"
               >
-                <td className="py-2 place-items-center  border-gray-700">
+                <td className="py-2 place-items-center  border-gray-700 px-1">
                   <img
                     src={user.profilePicture}
                     alt=""

@@ -22,7 +22,7 @@ const DashBox = ({
     allowedRoles.includes(currentUserRole) && (
       <Link
         to={to}
-        className="flex flex-col items-center justify-center gap-4 p-7 rounded-xl border border-gray-700 bg-gray-800 hover:bg-gray-700  hover:shadow-lg transition-all duration-300 transform hover:scale-105 w-55"
+        className="flex flex-col items-center justify-center gap-4 p-7 rounded-xl border border-gray-700 bg-gray-800 hover:bg-gray-700  hover:shadow-lg transition-all duration-300 transform hover:scale-105 w-55 not-sm:w-70 "
       >
         <div className="text-sky-600 text-4xl">{icon}</div>
         <span className="text-white font-semibold text-lg tracking-wide">
