@@ -91,7 +91,7 @@ const OperatorsPage = () => {
                 onClick={() => navigate(`/profile/${user._id}`)}
                 className="border-b border-gray-700 hover:bg-gray-800 transition-all duration-300 cursor-pointer "
               >
-                <td className="py-2 px-4  bg-white flex items-center justify-center border-gray-700 ">
+                <td className="py-2 px-4   flex items-center justify-center border-gray-700 ">
                   <img
                     src={user.profilePicture}
                     alt=""
